@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TasteMatch - Restaurant Discovery App</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .hero {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 80px 20px;
+            text-align: center;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .hero h1 {
+            font-size: 4em;
+            margin-bottom: 10px;
+            text-shadow: 0 2px 20px rgba(0,0,0,0.3);
+            animation: slideDown 0.6s ease-out;
+        }
+
+        .hero p {
+            font-size: 1.3em;
+            margin-bottom: 30px;
+            opacity: 0.95;
+            animation: fadeIn 0.8s ease-out;
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+            animation: fadeInUp 1s ease-out;
+        }
+
+        .btn {
+            padding: 15px 40px;
+            font-size: 1.1em;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-primary {
+            background: white;
+            color: #667eea;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+        }
+
+        .btn-secondary {
+            background: rgba(255,255,255,0.2);
+            color: white;
+            border: 2px solid white;
+        }
+
+        .btn-secondary:hover {
+            background: white;
+            color: #667eea;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .section {
+            padding: 80px 20px;
+            background: white;
+            margin: 0;
+        }
+
+        .section h2 {
+            font-size: 2.5em;
+            text-align: center;
+            margin-bottom: 50px;
+            color: #667eea;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 15px;
+            padding: 40px 30px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            text-align: center;
+            border: 1px solid #f0f0f0;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(102, 126, 234, 0.2);
+        }
+
+        .card-icon {
+            font-size: 3em;
+            margin-bottom: 20px;
+        }
+
+        .card h3 {
+            font-size: 1.5em;
+            margin-bottom: 15px;
+            color: #667eea;
+        }
+
+        .card p {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        .feature-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .feature-list li {
+            padding: 10px 0;
+            border-bottom: 1px solid #f0f0f0;
+            color: #666;
+        }
+
+        .feature-list li:last-child {
+            border-bottom: none;
+        }
+
+        .feature-list li:before {
+            content: "✓ ";
+            color: #667eea;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 30px;
+            margin-top: 50px;
+        }
+
+        .stat {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 2.5em;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .stat-label {
+            color: #666;
+            margin-top: 10px;
+        }
+
+        footer {
+            background: #333;
+            color: white;
+            text-align: center;
+            padding: 40px 20px;
+        }
+
+        .status-badge {
+            display: inline-block;
+            background: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 50px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.8; }
+        }
+
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2.5em;
+            }
+
+            .hero p {
+                font-size: 1.1em;
+            }
+
+            .section h2 {
+                font-size: 1.8em;
+            }
+
+            .cta-buttons {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+            }
+        }
+
+        .code-block {
+            background: #f0f0f0;
+            padding: 10px;
+            border-radius: 5px;
+            margin: 15px 0;
+            font-size: 0.9em;
+            font-family: 'Courier New', monospace;
+            overflow-x: auto;
+        }
+    </style>
+</head>
+<body>
+    <!-- Hero Section -->
+    <section class="hero">
+        <h1>🍽️ TasteMatch</h1>
+        <p>Entdecke Restaurants mit Tinder-Swipe & Allergie-Sicherheit</p>
+        
+        <div class="status-badge">🟢 LIVE & VOLLSTÄNDIG FUNKTIONSFÄHIG</div>
+
+        <div class="cta-buttons">
+            <a href="https://tastematch.vercel.app" class="btn btn-primary">🚀 App öffnen (Online)</a>
+            <a href="#quick-start" class="btn btn-secondary">📖 Mehr erfahren</a>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="section">
+        <div class="container">
+            <h2>✨ Features</h2>
+            <div class="grid">
+                <div class="card">
+                    <div class="card-icon">🔍</div>
+                    <h3>Allergie-Filter</h3>
+                    <p>Intelligente Filter für 12 verschiedene Allergentypen. Sicher essen mit echten Allergie-Informationen.</p>
+                </div>
+
+                <div class="card">
+                    <div class="card-icon">💬</div>
+                    <h3>Swipe-Funktion</h3>
+                    <p>Tinder-ähnliche Bedienung. Entdecke Restaurants mit Like/Dislike Buttons in deiner Nähe.</p>
+                </div>
+
+                <div class="card">
+                    <div class="card-icon">⭐</div>
+                    <h3>Bewertungen</h3>
+                    <p>Echte 5-Sterne Bewertungen mit Allergie-Kommentaren und Fotos von Gästen.</p>
+                </div>
+
+                <div class="card">
+                    <div class="card-icon">✅</div>
+                    <h3>Verifizierung</h3>
+                    <p>Nur verifizierte Restaurants. Sicherheits-Badges für vertraute Allergie-Informationen.</p>
+                </div>
+
+                <div class="card">
+                    <div class="card-icon">🗺️</div>
+                    <h3>Google Maps</h3>
+                    <p>Entfernungsberechnung und Routenplanung zu jedem Restaurant.</p>
+                </div>
+
+                <div class="card">
+                    <div class="card-icon">💾</div>
+                    <h3>Favoriten</h3>
+                    <p>Speichere deine Lieblings-Restaurants. Alle Daten bleiben privat im Browser.</p>
+                </div>
+            </div>
+
+            <div class="stats">
+                <div class="stat">
+                    <div class="stat-number">12</div>
+                    <div class="stat-label">Test-Restaurants</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-number">12</div>
+                    <div class="stat-label">Allergen-Filter</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-number">100%</div>
+                    <div class="stat-label">Responsive Design</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-number">0</div>
+                    <div class="stat-label">Abhängigkeiten</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Quick Start Section -->
+    <section class="section" id="quick-start" style="background: #f9f9f9;">
+        <div class="container">
+            <h2>🚀 Schnell Starten</h2>
+            <div class="grid">
+                <div class="card">
+                    <div class="card-icon">⚡</div>
+                    <h3>Online Version</h3>
+                    <p><strong>Keine Installation nötig!</strong> Öffne die App sofort:</p>
+                    <a href="https://tastematch.vercel.app" class="btn btn-primary" style="margin-top: 20px; width: fit-content;">App öffnen</a>
+                </div>
+
+                <div class="card">
+                    <div class="card-icon">🏠</div>
+                    <h3>Lokal Testen</h3>
+                    <p><strong>Auf deinem Computer:</strong></p>
+                    <div class="code-block">python -m http.server 8000</div>
+                    <p>Dann öffne: <a href="http://localhost:8000" style="color: #667eea;">http://localhost:8000</a></p>
+                </div>
+
+                <div class="card">
+                    <div class="card-icon">🐳</div>
+                    <h3>Mit Docker</h3>
+                    <p><strong>Docker Container:</strong></p>
+                    <div class="code-block">docker run -p 8000:8000 tastematch</div>
+                    <p>Port: 8000</p>
+                </div>
+
+                <div class="card">
+                    <div class="card-icon">📊</div>
+                    <h3>Admin-Panel</h3>
+                    <p><strong>Restaurants verwalten:</strong></p>
+                    <a href="./admin.html" class="btn btn-primary" style="margin-top: 20px; width: fit-content;">Admin öffnen</a>
+                    <p style="font-size: 0.85em; margin-top: 10px;">URL: /admin.html</p>
+                </div>
+
+                <div class="card">
+                    <div class="card-icon">🌐</div>
+                    <h3>Eigene Domain</h3>
+                    <p><strong>Auf Vercel deployen:</strong> (5 Min)</p>
+                    <a href="./DEPLOY.html" class="btn btn-primary" style="margin-top: 20px; width: fit-content;">Deploy Guide</a>
+                </div>
+
+                <div class="card">
+                    <div class="card-icon">📚</div>
+                    <h3>Dokumentation</h3>
+                    <p><strong>Alles was du brauchst:</strong></p>
+                    <ul class="feature-list">
+                        <li><a href="./QUICK_START.md" style="color: #667eea;">Quick Start</a></li>
+                        <li><a href="./docs/DEPLOYMENT.md" style="color: #667eea;">Deployment Guide</a></li>
+                        <li><a href="./docs/API.md" style="color: #667eea;">API Docs</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Tech Stack Section -->
+    <section class="section">
+        <div class="container">
+            <h2>⚙️ Technologie Stack</h2>
+            <div class="grid">
+                <div class="card">
+                    <h3>Frontend (Aktuell)</h3>
+                    <ul class="feature-list">
+                        <li>HTML5</li>
+                        <li>CSS3 (Flexbox, Grid)</li>
+                        <li>JavaScript ES6+</li>
+                        <li>LocalStorage API</li>
+                        <li>Responsive Design</li>
+                    </ul>
+                </div>
+
+                <div class="card">
+                    <h3>Backend (Phase 2)</h3>
+                    <ul class="feature-list">
+                        <li>Node.js + Express</li>
+                        <li>TypeScript</li>
+                        <li>Firebase Admin SDK</li>
+                        <li>Firestore Database</li>
+                        <li>REST API</li>
+                    </ul>
+                </div>
+
+                <div class="card">
+                    <h3>Deployment</h3>
+                    <ul class="feature-list">
+                        <li>✅ Vercel (Empfohlen)</li>
+                        <li>Netlify (Alternative)</li>
+                        <li>GitHub Pages</li>
+                        <li>Docker</li>
+                        <li>Railway</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Roadmap Section -->
+    <section class="section" style="background: #f9f9f9;">
+        <div class="container">
+            <h2>🗺️ Roadmap</h2>
+            <div class="grid">
+                <div class="card" style="border-left: 4px solid #4CAF50;">
+                    <h3>✅ Phase 1: MVP</h3>
+                    <ul class="feature-list">
+                        <li>HTML/CSS/JS App</li>
+                        <li>Allergie-Filter</li>
+                        <li>Swipe-Funktion</li>
+                        <li>Admin-Panel</li>
+                        <li>Live auf Vercel</li>
+                    </ul>
+                </div>
+
+                <div class="card" style="border-left: 4px solid #FF9800;">
+                    <h3>⏳ Phase 2: Backend</h3>
+                    <ul class="feature-list">
+                        <li>Node.js API</li>
+                        <li>Firebase Firestore</li>
+                        <li>User-Authentifizierung</li>
+                        <li>Realtime Daten-Sync</li>
+                        <li>Email-Verifikation</li>
+                    </ul>
+                </div>
+
+                <div class="card" style="border-left: 4px solid #2196F3;">
+                    <h3>📅 Phase 3: Features</h3>
+                    <ul class="feature-list">
+                        <li>Photo Upload</li>
+                        <li>Google Maps API</li>
+                        <li>Social Sharing</li>
+                        <li>Notifications</li>
+                        <li>Mobile App</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <h3>🍽️ TasteMatch - Restaurant Discovery with Allergie Safety</h3>
+            <p style="margin: 20px 0;">© 2026 | Ein Projekt mit ❤️ gebaut</p>
+            
+            <div style="margin: 30px 0; padding: 30px 0; border-top: 1px solid #555; border-bottom: 1px solid #555;">
+                <p style="margin-bottom: 15px;"><strong>🌍 Live Demo:</strong></p>
+                <a href="https://tastematch.vercel.app" style="color: #667eea; text-decoration: none; font-weight: bold;">→ https://tastematch.vercel.app</a>
+                <p style="margin-top: 15px; font-size: 0.9em; opacity: 0.8;">Klicken Sie auf den Link für die Online-Version ohne Installation!</p>
+            </div>
+
+            <div style="margin-top: 20px;">
+                <a href="./DEPLOY.html" style="color: #999; text-decoration: none; margin: 0 10px;">📦 Deployen</a>
+                <span style="color: #999;">|</span>
+                <a href="./QUICK_START.md" style="color: #999; text-decoration: none; margin: 0 10px;">📖 Docs</a>
+                <span style="color: #999;">|</span>
+                <a href="./admin.html" style="color: #999; text-decoration: none; margin: 0 10px;">👨‍💼 Admin</a>
+                <span style="color: #999;">|</span>
+                <a href="./index.html" style="color: #999; text-decoration: none; margin: 0 10px;">🎮 App starten</a>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

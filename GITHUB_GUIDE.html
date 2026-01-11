@@ -1,0 +1,795 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TasteMatch - GitHub Integration Guide</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 50px;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+
+        .section {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.15);
+        }
+
+        .section h2 {
+            color: #667eea;
+            font-size: 1.8em;
+            margin-bottom: 20px;
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 10px;
+        }
+
+        .section h3 {
+            color: #764ba2;
+            font-size: 1.3em;
+            margin-top: 25px;
+            margin-bottom: 15px;
+        }
+
+        .step-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .step-card {
+            background: linear-gradient(135deg, #f0f4ff 0%, #f9f7ff 100%);
+            border: 2px solid #667eea;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .step-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.2);
+        }
+
+        .step-number {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            font-weight: bold;
+            margin: 0 auto 15px;
+        }
+
+        .step-card h4 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+
+        .step-card p {
+            color: #666;
+            font-size: 0.95em;
+            line-height: 1.5;
+        }
+
+        .code-block {
+            background: #f5f5f5;
+            border-left: 4px solid #667eea;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 5px;
+            font-family: 'Courier New', monospace;
+            overflow-x: auto;
+            font-size: 0.9em;
+        }
+
+        .code-block code {
+            color: #333;
+        }
+
+        .button-row {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin: 20px 0;
+            justify-content: center;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: bold;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: white;
+            color: #667eea;
+            border: 2px solid #667eea;
+        }
+
+        .btn-secondary:hover {
+            background: #f0f4ff;
+        }
+
+        .checklist {
+            background: #f9f7ff;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 15px 0;
+        }
+
+        .checklist-item {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            margin: 8px 0;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background 0.2s ease;
+        }
+
+        .checklist-item:hover {
+            background: rgba(102, 126, 234, 0.1);
+        }
+
+        .checkbox {
+            width: 24px;
+            height: 24px;
+            border: 2px solid #667eea;
+            border-radius: 4px;
+            margin-right: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            background: white;
+            transition: all 0.2s ease;
+        }
+
+        .checkbox:hover {
+            background: #667eea;
+            color: white;
+        }
+
+        .checklist-item.checked .checkbox {
+            background: #667eea;
+            color: white;
+        }
+
+        .checklist-text {
+            flex: 1;
+            color: #333;
+        }
+
+        .workflow {
+            background: #f5f5f5;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            text-align: center;
+        }
+
+        .workflow svg {
+            max-width: 100%;
+            height: auto;
+        }
+
+        .timeline {
+            position: relative;
+            padding: 20px 0;
+        }
+
+        .timeline-item {
+            display: flex;
+            margin-bottom: 30px;
+            position: relative;
+        }
+
+        .timeline-marker {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-right: 20px;
+            flex-shrink: 0;
+            z-index: 2;
+        }
+
+        .timeline-item:not(:last-child)::before {
+            content: '';
+            position: absolute;
+            left: 20px;
+            top: 40px;
+            width: 2px;
+            height: calc(100% + 30px);
+            background: #ddd;
+        }
+
+        .timeline-content {
+            flex: 1;
+            padding-top: 5px;
+        }
+
+        .timeline-content h4 {
+            color: #333;
+            margin-bottom: 8px;
+        }
+
+        .timeline-content p {
+            color: #666;
+            font-size: 0.95em;
+            margin-bottom: 8px;
+        }
+
+        .tab-container {
+            margin: 20px 0;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 0;
+            border-bottom: 2px solid #ddd;
+            flex-wrap: wrap;
+        }
+
+        .tab {
+            padding: 12px 20px;
+            cursor: pointer;
+            background: #f5f5f5;
+            border: none;
+            font-size: 1em;
+            font-weight: 500;
+            color: #666;
+            transition: all 0.3s ease;
+            border-bottom: 3px solid transparent;
+        }
+
+        .tab:hover {
+            background: #efefef;
+        }
+
+        .tab.active {
+            background: white;
+            color: #667eea;
+            border-bottom-color: #667eea;
+        }
+
+        .tab-content {
+            display: none;
+            padding: 20px;
+            background: white;
+            border-radius: 0 0 8px 8px;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .feature-card {
+            background: linear-gradient(135deg, #f0f4ff 0%, #f9f7ff 100%);
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+            text-align: center;
+        }
+
+        .feature-card .icon {
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+
+        .feature-card h4 {
+            color: #333;
+            margin-bottom: 8px;
+        }
+
+        .feature-card p {
+            color: #666;
+            font-size: 0.9em;
+        }
+
+        .alert {
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            border-left: 4px solid;
+        }
+
+        .alert-info {
+            background: #e8f0fe;
+            border-left-color: #667eea;
+            color: #333;
+        }
+
+        .alert-success {
+            background: #f0f9ff;
+            border-left-color: #4caf50;
+            color: #333;
+        }
+
+        .alert-warning {
+            background: #fff3e0;
+            border-left-color: #ff9500;
+            color: #333;
+        }
+
+        .alert-danger {
+            background: #ffebee;
+            border-left-color: #ff6b6b;
+            color: #333;
+        }
+
+        .footer {
+            text-align: center;
+            color: white;
+            padding: 20px;
+            opacity: 0.8;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 1.8em;
+            }
+
+            .section {
+                padding: 20px;
+            }
+
+            .button-row {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- HEADER -->
+        <div class="header">
+            <h1>🔗 GitHub Integration</h1>
+            <p>TasteMatch mit GitHub verbinden - Schritt für Schritt Guide</p>
+        </div>
+
+        <!-- QUICK START -->
+        <div class="section">
+            <h2>⚡ Quick Start (5 Minuten)</h2>
+            
+            <div class="step-grid">
+                <div class="step-card">
+                    <div class="step-number">1</div>
+                    <h4>Repository erstellen</h4>
+                    <p>Auf GitHub.com ein neues Repository "tastematch" erstellen</p>
+                </div>
+                <div class="step-card">
+                    <div class="step-number">2</div>
+                    <h4>Git Init</h4>
+                    <p>Lokales Git Repository initialisieren</p>
+                </div>
+                <div class="step-card">
+                    <div class="step-number">3</div>
+                    <h4>Remote Add</h4>
+                    <p>GitHub URL als "origin" hinzufügen</p>
+                </div>
+                <div class="step-card">
+                    <div class="step-number">4</div>
+                    <h4>Commit & Push</h4>
+                    <p>Code zu GitHub pushen - FERTIG! 🎉</p>
+                </div>
+            </div>
+
+            <div class="button-row">
+                <a href="https://github.com/new" class="btn btn-primary">→ Repository erstellen</a>
+                <a href="#manual-steps" class="btn btn-secondary">Manuelle Schritte</a>
+            </div>
+        </div>
+
+        <!-- SCHRITT-FÜR-SCHRITT -->
+        <div class="section" id="manual-steps">
+            <h2>📋 Schritt-für-Schritt Anleitung</h2>
+
+            <div class="timeline">
+                <div class="timeline-item">
+                    <div class="timeline-marker">1️⃣</div>
+                    <div class="timeline-content">
+                        <h4>GitHub Account & Repository</h4>
+                        <p>Besuche <strong>https://github.com/new</strong></p>
+                        <div class="code-block">
+Repository Name: tastematch
+Description: Restaurant Discovery App with Swipe Function
+Visibility: Public
+Initialize with README: Optional
+Click: Create repository
+                        </div>
+                    </div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="timeline-marker">2️⃣</div>
+                    <div class="timeline-content">
+                        <h4>Git Global Config</h4>
+                        <p>Git mit deinen Daten konfigurieren:</p>
+                        <div class="code-block">
+git config --global user.name "Dein Name"
+git config --global user.email "deine@email.com"
+                        </div>
+                    </div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="timeline-marker">3️⃣</div>
+                    <div class="timeline-content">
+                        <h4>Git Repository Init</h4>
+                        <p>Ins TasteMatch Verzeichnis wechseln und Git initialisieren:</p>
+                        <div class="code-block">
+cd "C:\Users\topraksuyu\Desktop\BHT\TasteMatch 11.1"
+git init
+git status
+                        </div>
+                    </div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="timeline-marker">4️⃣</div>
+                    <div class="timeline-content">
+                        <h4>Remote Repository verbinden</h4>
+                        <p>GitHub URL kopieren und lokal hinzufügen:</p>
+                        <div class="code-block">
+git remote add origin https://github.com/[DEIN_USERNAME]/tastematch.git
+git remote -v
+                        </div>
+                    </div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="timeline-marker">5️⃣</div>
+                    <div class="timeline-content">
+                        <h4>Code zu GitHub pushen</h4>
+                        <p>Alle Dateien committen und zu GitHub pushen:</p>
+                        <div class="code-block">
+git add .
+git commit -m "Initial commit: TasteMatch v1.0.0"
+git branch -M main
+git push -u origin main
+                        </div>
+                    </div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="timeline-marker">✅</div>
+                    <div class="timeline-content">
+                        <h4>Überprüfung</h4>
+                        <p>Auf GitHub überprüfen: <strong>https://github.com/[USERNAME]/tastematch</strong></p>
+                        <p>✓ Alle Dateien vorhanden? ✓ README.md sichtbar? ✓ Code vollständig?</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- AUTHENTIFIZIERUNG -->
+        <div class="section">
+            <h2>🔐 Authentifizierung</h2>
+
+            <div class="tab-container">
+                <div class="tabs">
+                    <button class="tab active" onclick="switchTab(0)">Token (Empfohlen)</button>
+                    <button class="tab" onclick="switchTab(1)">SSH (Profis)</button>
+                </div>
+
+                <div class="tab-content active">
+                    <h3>Personal Access Token</h3>
+                    <ol style="line-height: 2;">
+                        <li>GitHub Tokens: <a href="https://github.com/settings/tokens" target="_blank">github.com/settings/tokens</a></li>
+                        <li>"Generate new token (classic)" klicken</li>
+                        <li>Name: "tastematch-token"</li>
+                        <li>Scopes: repo ✓, workflow ✓</li>
+                        <li>"Generate token" - Token kopieren (nur 1x sichtbar!)</li>
+                        <li>Beim Git Push: Token als Passwort verwenden</li>
+                    </ol>
+                    <div class="alert alert-warning">
+                        ⚠️ Token speichern! Nach Schließen nicht mehr sichtbar.
+                    </div>
+                </div>
+
+                <div class="tab-content">
+                    <h3>SSH-Schlüssel</h3>
+                    <div class="code-block">
+# 1. SSH-Key generieren
+ssh-keygen -t ed25519 -C "deine@email.com"
+
+# 2. Public Key zu GitHub hinzufügen
+# Datei: ~/.ssh/id_ed25519.pub
+# https://github.com/settings/ssh/new
+
+# 3. Remote mit SSH
+git remote set-url origin git@github.com:[USERNAME]/tastematch.git
+
+# 4. Pushen ohne Passwort
+git push -u origin main
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- CHECKLISTE -->
+        <div class="section">
+            <h2>☑️ Checkliste</h2>
+
+            <div class="checklist">
+                <div class="checklist-item" onclick="toggleCheckbox(this)">
+                    <div class="checkbox"></div>
+                    <div class="checklist-text">GitHub Account erstellen</div>
+                </div>
+                <div class="checklist-item" onclick="toggleCheckbox(this)">
+                    <div class="checkbox"></div>
+                    <div class="checklist-text">Repository "tastematch" erstellen</div>
+                </div>
+                <div class="checklist-item" onclick="toggleCheckbox(this)">
+                    <div class="checkbox"></div>
+                    <div class="checklist-text">Git global konfigurieren</div>
+                </div>
+                <div class="checklist-item" onclick="toggleCheckbox(this)">
+                    <div class="checkbox"></div>
+                    <div class="checklist-text">Git Repository initialisieren</div>
+                </div>
+                <div class="checklist-item" onclick="toggleCheckbox(this)">
+                    <div class="checkbox"></div>
+                    <div class="checklist-text">Remote origin hinzufügen</div>
+                </div>
+                <div class="checklist-item" onclick="toggleCheckbox(this)">
+                    <div class="checkbox"></div>
+                    <div class="checklist-text">Dateien committen (git add & git commit)</div>
+                </div>
+                <div class="checklist-item" onclick="toggleCheckbox(this)">
+                    <div class="checkbox"></div>
+                    <div class="checklist-text">Zu main branch wechseln</div>
+                </div>
+                <div class="checklist-item" onclick="toggleCheckbox(this)">
+                    <div class="checkbox"></div>
+                    <div class="checklist-text">Zu GitHub pushen (git push)</div>
+                </div>
+                <div class="checklist-item" onclick="toggleCheckbox(this)">
+                    <div class="checkbox"></div>
+                    <div class="checklist-text">Auf GitHub überprüfen</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- HÄUFIGE FEHLER -->
+        <div class="section">
+            <h2>🐛 Häufige Fehler & Lösungen</h2>
+
+            <div class="alert alert-danger">
+                <strong>❌ "fatal: remote origin already exists"</strong>
+                <div class="code-block" style="margin-top: 10px;">
+git remote remove origin
+git remote add origin https://github.com/[USERNAME]/tastematch.git
+                </div>
+            </div>
+
+            <div class="alert alert-danger">
+                <strong>❌ "Authentication failed"</strong>
+                <div class="code-block" style="margin-top: 10px;">
+# Token überprüfen: https://github.com/settings/tokens
+# Oder SSH verwenden: git remote set-url origin git@github.com:[USERNAME]/tastematch.git
+                </div>
+            </div>
+
+            <div class="alert alert-danger">
+                <strong>❌ "fatal: not a git repository"</strong>
+                <div class="code-block" style="margin-top: 10px;">
+cd "C:\Users\topraksuyu\Desktop\BHT\TasteMatch 11.1"
+git init
+                </div>
+            </div>
+
+            <div class="alert alert-danger">
+                <strong>❌ "branch 'main' does not exist"</strong>
+                <div class="code-block" style="margin-top: 10px;">
+git branch -M main
+git push -u origin main
+                </div>
+            </div>
+        </div>
+
+        <!-- WORKFLOW NACH SETUP -->
+        <div class="section">
+            <h2>🔄 Täglicher Git Workflow</h2>
+
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <div class="icon">📝</div>
+                    <h4>1. Änderungen machen</h4>
+                    <p>Dateien editieren und testen</p>
+                </div>
+                <div class="feature-card">
+                    <div class="icon">➕</div>
+                    <h4>2. Add</h4>
+                    <p>git add .</p>
+                </div>
+                <div class="feature-card">
+                    <div class="icon">💾</div>
+                    <h4>3. Commit</h4>
+                    <p>git commit -m "..."</p>
+                </div>
+                <div class="feature-card">
+                    <div class="icon">🚀</div>
+                    <h4>4. Push</h4>
+                    <p>git push origin main</p>
+                </div>
+            </div>
+
+            <div class="code-block" style="margin-top: 20px;">
+# Beispiel: Feature hinzufügen
+git status
+# modified: src/App.tsx
+# modified: src/components/Login.tsx
+
+git add .
+git commit -m "feat: Add new login screen"
+git push origin main
+
+# Auf GitHub überprüfen
+# https://github.com/[USERNAME]/tastematch
+            </div>
+        </div>
+
+        <!-- NÄCHSTE SCHRITTE -->
+        <div class="section">
+            <h2>🎯 Nächste Schritte</h2>
+
+            <h3>Diese Woche:</h3>
+            <ul style="line-height: 2.2; margin-left: 20px;">
+                <li>✅ Repository mit GitHub verbinden</li>
+                <li>✅ Ersten Push abschließen</li>
+                <li>📝 README.md aktualisieren</li>
+                <li>📝 Topics hinzufügen (React, Firebase, etc.)</li>
+            </ul>
+
+            <h3 style="margin-top: 20px;">Nächste Woche:</h3>
+            <ul style="line-height: 2.2; margin-left: 20px;">
+                <li>⚙️ GitHub Actions aktivieren</li>
+                <li>🔒 Branch Protection einrichten</li>
+                <li>📊 Secrets für CI/CD konfigurieren</li>
+            </ul>
+
+            <h3 style="margin-top: 20px;">Langfristig:</h3>
+            <ul style="line-height: 2.2; margin-left: 20px;">
+                <li>👥 Feature Branches für Team</li>
+                <li>🔍 Pull Requests & Code Reviews</li>
+                <li>📦 Release Automation</li>
+                <li>📈 GitHub Pages für Dokumentation</li>
+            </ul>
+        </div>
+
+        <!-- LINKS -->
+        <div class="section">
+            <h2>🔗 Wichtige Links</h2>
+
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <div class="icon">🏠</div>
+                    <h4><a href="https://github.com" target="_blank" style="color: inherit; text-decoration: none;">GitHub</a></h4>
+                    <p>Hauptseite</p>
+                </div>
+                <div class="feature-card">
+                    <div class="icon">✨</div>
+                    <h4><a href="https://github.com/new" target="_blank" style="color: inherit; text-decoration: none;">New Repo</a></h4>
+                    <p>Repository erstellen</p>
+                </div>
+                <div class="feature-card">
+                    <div class="icon">🔐</div>
+                    <h4><a href="https://github.com/settings/tokens" target="_blank" style="color: inherit; text-decoration: none;">Tokens</a></h4>
+                    <p>Personal Access Token</p>
+                </div>
+                <div class="feature-card">
+                    <div class="icon">🔑</div>
+                    <h4><a href="https://github.com/settings/ssh" target="_blank" style="color: inherit; text-decoration: none;">SSH Keys</a></h4>
+                    <p>SSH Setup</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- FOOTER -->
+        <div class="footer">
+            <p>🎉 TasteMatch GitHub Integration - Vollständig eingerichtet</p>
+            <p style="font-size: 0.9em; margin-top: 10px;">Letzte Aktualisierung: 11. Januar 2026</p>
+        </div>
+    </div>
+
+    <script>
+        function switchTab(index) {
+            const tabs = document.querySelectorAll('.tab');
+            const contents = document.querySelectorAll('.tab-content');
+            
+            tabs.forEach(tab => tab.classList.remove('active'));
+            contents.forEach(content => content.classList.remove('active'));
+            
+            tabs[index].classList.add('active');
+            contents[index].classList.add('active');
+        }
+
+        function toggleCheckbox(element) {
+            element.classList.toggle('checked');
+            const checkbox = element.querySelector('.checkbox');
+            if (element.classList.contains('checked')) {
+                checkbox.textContent = '✓';
+            } else {
+                checkbox.textContent = '';
+            }
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,962 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TasteMatch - Architektur & Diagramme</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 50px;
+        }
+
+        .header h1 {
+            font-size: 3em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        .diagram-section {
+            background: white;
+            border-radius: 15px;
+            padding: 40px;
+            margin-bottom: 40px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            animation: slideUp 0.6s ease-out;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .diagram-section h2 {
+            color: #667eea;
+            font-size: 2em;
+            margin-bottom: 30px;
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 15px;
+        }
+
+        .diagram-content {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 500px;
+        }
+
+        /* ===== ARCHITECTURE DIAGRAM ===== */
+        svg {
+            max-width: 100%;
+            height: auto;
+        }
+
+        .arch-box {
+            fill: #f0f4ff;
+            stroke: #667eea;
+            stroke-width: 2;
+        }
+
+        .arch-box-highlight {
+            fill: #e8f0fe;
+            stroke: #764ba2;
+            stroke-width: 2.5;
+        }
+
+        .arch-text {
+            font-size: 14px;
+            font-weight: bold;
+            fill: #333;
+        }
+
+        .arch-label {
+            font-size: 12px;
+            fill: #666;
+            font-style: italic;
+        }
+
+        .arch-arrow {
+            stroke: #667eea;
+            stroke-width: 2;
+            fill: none;
+            marker-end: url(#arrowhead);
+        }
+
+        .arch-line {
+            stroke: #ddd;
+            stroke-width: 2;
+            fill: none;
+        }
+
+        /* ===== ENTITY RELATIONSHIP DIAGRAM ===== */
+        .entity-box {
+            fill: #fff8f0;
+            stroke: #ff9500;
+            stroke-width: 2;
+            rx: 5;
+        }
+
+        .entity-title {
+            fill: #fff;
+            background: #ff9500;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        .entity-field {
+            font-size: 12px;
+            fill: #333;
+        }
+
+        .relationship-line {
+            stroke: #ff9500;
+            stroke-width: 2;
+            fill: none;
+            marker-end: url(#relationArrow);
+        }
+
+        .relationship-label {
+            font-size: 11px;
+            fill: #ff9500;
+            font-weight: bold;
+        }
+
+        /* ===== USER JOURNEY ===== */
+        .journey-container {
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+        }
+
+        .journey-step {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            animation: fadeInLeft 0.8s ease-out;
+        }
+
+        .journey-step:nth-child(even) {
+            flex-direction: row-reverse;
+        }
+
+        @keyframes fadeInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .journey-number {
+            min-width: 60px;
+            min-height: 60px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            font-weight: bold;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .journey-content {
+            flex: 1;
+            background: #f8f9ff;
+            padding: 20px;
+            border-radius: 10px;
+            border-left: 4px solid #667eea;
+        }
+
+        .journey-step:nth-child(even) .journey-content {
+            border-left: none;
+            border-right: 4px solid #667eea;
+        }
+
+        .journey-title {
+            font-size: 18px;
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 8px;
+        }
+
+        .journey-description {
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+
+        .journey-actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .action-tag {
+            background: #667eea;
+            color: white;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+        }
+
+        .journey-connector {
+            width: 3px;
+            height: 30px;
+            background: linear-gradient(180deg, #667eea, transparent);
+            margin: -15px auto;
+        }
+
+        /* ===== LEGEND ===== */
+        .legend {
+            background: #f5f5f5;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 30px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .legend-color {
+            width: 40px;
+            height: 30px;
+            border-radius: 5px;
+            border: 2px solid #999;
+        }
+
+        .legend-text {
+            font-size: 14px;
+            color: #333;
+        }
+
+        /* ===== STATS ===== */
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 32px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2em;
+            }
+
+            .diagram-section {
+                padding: 20px;
+            }
+
+            .journey-step {
+                flex-direction: column !important;
+            }
+
+            .journey-content {
+                border-left: 4px solid #667eea !important;
+                border-right: none !important;
+            }
+        }
+
+        /* ===== PRINT ===== */
+        @media print {
+            body {
+                background: white;
+            }
+
+            .diagram-section {
+                page-break-inside: avoid;
+                box-shadow: none;
+                border: 1px solid #ccc;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- HEADER -->
+        <div class="header">
+            <h1>🏗️ TasteMatch - Architektur & Diagramme</h1>
+            <p>Komplette System-Architektur, Datenbank-Design und User Journey</p>
+        </div>
+
+        <!-- ===== 1. ARCHITECTURE DIAGRAM ===== -->
+        <div class="diagram-section">
+            <h2>1️⃣ System-Architektur Diagramm</h2>
+            
+            <div class="stats">
+                <div class="stat-card">
+                    <div class="stat-number">4</div>
+                    <div class="stat-label">Schichten</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">6</div>
+                    <div class="stat-label">Firebase Services</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">3</div>
+                    <div class="stat-label">Datenflüsse</div>
+                </div>
+            </div>
+
+            <div class="diagram-content">
+                <svg viewBox="0 0 1200 800" style="max-width: 100%; height: auto;">
+                    <defs>
+                        <marker id="arrowhead" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+                            <polygon points="0 0, 10 3, 0 6" fill="#667eea"/>
+                        </marker>
+                    </defs>
+
+                    <!-- LAYER 1: CLIENT -->
+                    <text x="600" y="40" style="font-size: 18px; font-weight: bold; text-anchor: middle; fill: #667eea;">PRESENTATION LAYER (Client)</text>
+                    
+                    <rect class="arch-box" x="100" y="70" width="200" height="100" rx="8"/>
+                    <text class="arch-text" x="200" y="110" text-anchor="middle">🌐 React Frontend</text>
+                    <text class="arch-label" x="200" y="135" text-anchor="middle">TypeScript + Tailwind</text>
+
+                    <rect class="arch-box" x="400" y="70" width="200" height="100" rx="8"/>
+                    <text class="arch-text" x="500" y="110" text-anchor="middle">📱 Browser/Mobile</text>
+                    <text class="arch-label" x="500" y="135" text-anchor="middle">Responsive UI</text>
+
+                    <rect class="arch-box" x="700" y="70" width="200" height="100" rx="8"/>
+                    <text class="arch-text" x="800" y="110" text-anchor="middle">🔐 State Management</text>
+                    <text class="arch-label" x="800" y="135" text-anchor="middle">Zustand Store</text>
+
+                    <rect class="arch-box" x="1000" y="70" width="150" height="100" rx="8"/>
+                    <text class="arch-text" x="1075" y="110" text-anchor="middle">🎨 Components</text>
+                    <text class="arch-label" x="1075" y="135" text-anchor="middle">6 Screens</text>
+
+                    <!-- LAYER 2: BUSINESS LOGIC -->
+                    <text x="600" y="220" style="font-size: 18px; font-weight: bold; text-anchor: middle; fill: #667eea;">BUSINESS LOGIC LAYER</text>
+                    
+                    <rect class="arch-box" x="150" y="250" width="350" height="100" rx="8"/>
+                    <text class="arch-text" x="325" y="285" text-anchor="middle">📋 Services & Hooks</text>
+                    <text class="arch-label" x="325" y="310" text-anchor="middle">api.ts • useGeolocation • firebase.ts</text>
+
+                    <rect class="arch-box" x="700" y="250" width="350" height="100" rx="8"/>
+                    <text class="arch-text" x="875" y="285" text-anchor="middle">🔄 Business Logic</text>
+                    <text class="arch-label" x="875" y="310" text-anchor="middle">Filtering • Swipe Logic • Favorites</text>
+
+                    <!-- LAYER 3: FIREBASE -->
+                    <text x="600" y="400" style="font-size: 18px; font-weight: bold; text-anchor: middle; fill: #667eea;">FIREBASE BACKEND</text>
+
+                    <rect class="arch-box-highlight" x="50" y="430" width="130" height="90" rx="8"/>
+                    <text class="arch-text" x="115" y="460" text-anchor="middle">🔐 Authentication</text>
+                    <text class="arch-label" x="115" y="485" text-anchor="middle">Email/Google</text>
+
+                    <rect class="arch-box-highlight" x="220" y="430" width="130" height="90" rx="8"/>
+                    <text class="arch-text" x="285" y="460" text-anchor="middle">🗄️ Firestore DB</text>
+                    <text class="arch-label" x="285" y="485" text-anchor="middle">Collections</text>
+
+                    <rect class="arch-box-highlight" x="390" y="430" width="130" height="90" rx="8"/>
+                    <text class="arch-text" x="455" y="460" text-anchor="middle">💾 Cloud Storage</text>
+                    <text class="arch-label" x="455" y="485" text-anchor="middle">Photos/Images</text>
+
+                    <rect class="arch-box-highlight" x="560" y="430" width="130" height="90" rx="8"/>
+                    <text class="arch-text" x="625" y="460" text-anchor="middle">⚙️ Cloud Functions</text>
+                    <text class="arch-label" x="625" y="485" text-anchor="middle">Serverless Logic</text>
+
+                    <rect class="arch-box-highlight" x="730" y="430" width="130" height="90" rx="8"/>
+                    <text class="arch-text" x="795" y="460" text-anchor="middle">📊 Analytics</text>
+                    <text class="arch-label" x="795" y="485" text-anchor="middle">User Tracking</text>
+
+                    <rect class="arch-box-highlight" x="900" y="430" width="130" height="90" rx="8"/>
+                    <text class="arch-text" x="965" y="460" text-anchor="middle">🌐 Hosting</text>
+                    <text class="arch-label" x="965" y="485" text-anchor="middle">Firebase Hosting</text>
+
+                    <!-- LAYER 4: DATA -->
+                    <text x="600" y="580" style="font-size: 18px; font-weight: bold; text-anchor: middle; fill: #667eea;">DATA LAYER</text>
+
+                    <rect class="arch-box" x="200" y="610" width="350" height="100" rx="8"/>
+                    <text class="arch-text" x="375" y="645" text-anchor="middle">📦 Collections</text>
+                    <text class="arch-label" x="375" y="670" text-anchor="middle">users • restaurants • reviews • favorites</text>
+
+                    <rect class="arch-box" x="700" y="610" width="350" height="100" rx="8"/>
+                    <text class="arch-text" x="875" y="645" text-anchor="middle">🔗 Relationships</text>
+                    <text class="arch-label" x="875" y="670" text-anchor="middle">Foreign Keys • References • Indexes</text>
+
+                    <!-- ARROWS -->
+                    <path class="arch-arrow" d="M 200 170 L 325 250"/>
+                    <path class="arch-arrow" d="M 500 170 L 500 250"/>
+                    <path class="arch-arrow" d="M 800 170 L 875 250"/>
+                    <path class="arch-arrow" d="M 1050 170 L 875 250"/>
+
+                    <path class="arch-arrow" d="M 325 350 L 115 430"/>
+                    <path class="arch-arrow" d="M 375 350 L 285 430"/>
+                    <path class="arch-arrow" d="M 475 350 L 455 430"/>
+                    <path class="arch-arrow" d="M 550 350 L 625 430"/>
+                    <path class="arch-arrow" d="M 775 350 L 795 430"/>
+                    <path class="arch-arrow" d="M 875 350 L 965 430"/>
+
+                    <path class="arch-arrow" d="M 115 520 L 375 610"/>
+                    <path class="arch-arrow" d="M 285 520 L 375 610"/>
+                    <path class="arch-arrow" d="M 455 520 L 375 610"/>
+                    <path class="arch-arrow" d="M 625 520 L 375 610"/>
+                    <path class="arch-arrow" d="M 795 520 L 375 610"/>
+                    <path class="arch-arrow" d="M 965 520 L 875 610"/>
+
+                    <path class="arch-line" d="M 600 70 L 600 40"/>
+                    <path class="arch-line" d="M 600 220 L 600 200"/>
+                    <path class="arch-line" d="M 600 400 L 600 380"/>
+                    <path class="arch-line" d="M 600 580 L 600 560"/>
+                </svg>
+            </div>
+
+            <div class="legend">
+                <div class="legend-item">
+                    <div class="legend-color" style="background: #f0f4ff;"></div>
+                    <div class="legend-text">Standard Service</div>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background: #e8f0fe;"></div>
+                    <div class="legend-text">Firebase Service</div>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background: white; border: 2px solid #667eea;"></div>
+                    <div class="legend-text">Datenfluss (Pfeile)</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== 2. ENTITY RELATIONSHIP DIAGRAM ===== -->
+        <div class="diagram-section">
+            <h2>2️⃣ Entity-Relationship Diagramm (ERD)</h2>
+            
+            <div class="stats">
+                <div class="stat-card">
+                    <div class="stat-number">6</div>
+                    <div class="stat-label">Collections</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">20+</div>
+                    <div class="stat-label">Felder</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">10+</div>
+                    <div class="stat-label">Beziehungen</div>
+                </div>
+            </div>
+
+            <div class="diagram-content">
+                <svg viewBox="0 0 1400 900" style="max-width: 100%; height: auto;">
+                    <defs>
+                        <marker id="relationArrow" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+                            <polygon points="0 0, 10 3, 0 6" fill="#ff9500"/>
+                        </marker>
+                    </defs>
+
+                    <!-- USERS COLLECTION -->
+                    <g>
+                        <rect class="entity-box" x="50" y="50" width="280" height="280" rx="8"/>
+                        <rect fill="#ff9500" x="50" y="50" width="280" height="35" rx="8"/>
+                        <text x="190" y="75" style="font-size: 16px; font-weight: bold; fill: white; text-anchor: middle;">👤 users</text>
+                        
+                        <line x1="50" y1="85" x2="330" y2="85" stroke="#ddd" stroke-width="1"/>
+                        
+                        <text class="entity-field" x="65" y="105">🔑 uid (String)</text>
+                        <text class="entity-field" x="65" y="125">📧 email (String)</text>
+                        <text class="entity-field" x="65" y="145">👤 displayName (String)</text>
+                        <text class="entity-field" x="65" y="165">🖼️ photoURL (String)</text>
+                        <text class="entity-field" x="65" y="185">📅 createdAt (Timestamp)</text>
+                        <text class="entity-field" x="65" y="205">🔍 preferences (Map)</text>
+                        <text class="entity-field" x="65" y="225">  • allergies (Array)</text>
+                        <text class="entity-field" x="65" y="245">  • distance (Number)</text>
+                        <text class="entity-field" x="65" y="265">📍 location (GeoPoint)</text>
+                        <text class="entity-field" x="65" y="285">⭐ favoriteCount (Number)</text>
+                    </g>
+
+                    <!-- RESTAURANTS COLLECTION -->
+                    <g>
+                        <rect class="entity-box" x="1050" y="50" width="280" height="280" rx="8"/>
+                        <rect fill="#ff9500" x="1050" y="50" width="280" height="35" rx="8"/>
+                        <text x="1190" y="75" style="font-size: 16px; font-weight: bold; fill: white; text-anchor: middle;">🍽️ restaurants</text>
+                        
+                        <line x1="1050" y1="85" x2="1330" y2="85" stroke="#ddd" stroke-width="1"/>
+                        
+                        <text class="entity-field" x="1065" y="105">🔑 id (String)</text>
+                        <text class="entity-field" x="1065" y="125">🏪 name (String)</text>
+                        <text class="entity-field" x="1065" y="145">🍴 cuisine (String)</text>
+                        <text class="entity-field" x="1065" y="165">📍 address (String)</text>
+                        <text class="entity-field" x="1065" y="185">⭐ rating (Number)</text>
+                        <text class="entity-field" x="1065" y="205">✅ verified (Boolean)</text>
+                        <text class="entity-field" x="1065" y="225">🧬 allergens (Map)</text>
+                        <text class="entity-field" x="1065" y="245">📸 imageURL (String)</text>
+                        <text class="entity-field" x="1065" y="265">⏰ hours (Map)</text>
+                        <text class="entity-field" x="1065" y="285">📞 phone (String)</text>
+                    </g>
+
+                    <!-- REVIEWS COLLECTION -->
+                    <g>
+                        <rect class="entity-box" x="400" y="450" width="280" height="280" rx="8"/>
+                        <rect fill="#ff9500" x="400" y="450" width="280" height="35" rx="8"/>
+                        <text x="540" y="475" style="font-size: 16px; font-weight: bold; fill: white; text-anchor: middle;">⭐ reviews</text>
+                        
+                        <line x1="400" y1="485" x2="680" y2="485" stroke="#ddd" stroke-width="1"/>
+                        
+                        <text class="entity-field" x="415" y="505">🔑 id (String)</text>
+                        <text class="entity-field" x="415" y="525">🔗 restaurantId (String)</text>
+                        <text class="entity-field" x="415" y="545">👤 userId (String)</text>
+                        <text class="entity-field" x="415" y="565">⭐ rating (Number)</text>
+                        <text class="entity-field" x="415" y="585">📝 title (String)</text>
+                        <text class="entity-field" x="415" y="605">💬 text (String)</text>
+                        <text class="entity-field" x="415" y="625">🧬 allergyInfo (String)</text>
+                        <text class="entity-field" x="415" y="645">✅ approved (Boolean)</text>
+                        <text class="entity-field" x="415" y="665">📅 createdAt (Timestamp)</text>
+                        <text class="entity-field" x="415" y="685">👍 helpful (Number)</text>
+                    </g>
+
+                    <!-- USER_FAVORITES COLLECTION -->
+                    <g>
+                        <rect class="entity-box" x="50" y="450" width="280" height="200" rx="8"/>
+                        <rect fill="#ff9500" x="50" y="450" width="280" height="35" rx="8"/>
+                        <text x="190" y="475" style="font-size: 16px; font-weight: bold; fill: white; text-anchor: middle;">❤️ user_favorites</text>
+                        
+                        <line x1="50" y1="485" x2="330" y2="485" stroke="#ddd" stroke-width="1"/>
+                        
+                        <text class="entity-field" x="65" y="505">👤 userId (String)</text>
+                        <text class="entity-field" x="65" y="525">🔗 restaurantIds (Array)</text>
+                        <text class="entity-field" x="65" y="545">📊 count (Number)</text>
+                        <text class="entity-field" x="65" y="565">📅 lastUpdated (Timestamp)</text>
+                        <text class="entity-field" x="65" y="585">🏷️ tags (Array)</text>
+                    </g>
+
+                    <!-- VERIFICATIONS COLLECTION -->
+                    <g>
+                        <rect class="entity-box" x="750" y="450" width="280" height="200" rx="8"/>
+                        <rect fill="#ff9500" x="750" y="450" width="280" height="35" rx="8"/>
+                        <text x="890" y="475" style="font-size: 16px; font-weight: bold; fill: white; text-anchor: middle;">✔️ verifications</text>
+                        
+                        <line x1="750" y1="485" x2="1030" y2="485" stroke="#ddd" stroke-width="1"/>
+                        
+                        <text class="entity-field" x="765" y="505">🔑 id (String)</text>
+                        <text class="entity-field" x="765" y="525">🔗 restaurantId (String)</text>
+                        <text class="entity-field" x="765" y="545">📧 email (String)</text>
+                        <text class="entity-field" x="765" y="565">🔐 code (String)</text>
+                        <text class="entity-field" x="765" y="585">✅ verified (Boolean)</text>
+                    </g>
+
+                    <!-- USER_PREFERENCES COLLECTION -->
+                    <g>
+                        <rect class="entity-box" x="1050" y="450" width="280" height="200" rx="8"/>
+                        <rect fill="#ff9500" x="1050" y="450" width="280" height="35" rx="8"/>
+                        <text x="1190" y="475" style="font-size: 16px; font-weight: bold; fill: white; text-anchor: middle;">⚙️ user_preferences</text>
+                        
+                        <line x1="1050" y1="485" x2="1330" y2="485" stroke="#ddd" stroke-width="1"/>
+                        
+                        <text class="entity-field" x="1065" y="505">👤 userId (String)</text>
+                        <text class="entity-field" x="1065" y="525">🧬 allergies (Array)</text>
+                        <text class="entity-field" x="1065" y="545">📍 distance (Number)</text>
+                        <text class="entity-field" x="1065" y="565">✅ verifiedOnly (Boolean)</text>
+                        <text class="entity-field" x="1065" y="585">🌙 darkMode (Boolean)</text>
+                    </g>
+
+                    <!-- RELATIONSHIPS -->
+                    <!-- users -> user_favorites -->
+                    <path class="relationship-line" d="M 190 330 L 190 450" stroke-dasharray="5,5"/>
+                    <text class="relationship-label" x="200" y="390">1:N</text>
+
+                    <!-- user_favorites -> restaurants -->
+                    <path class="relationship-line" d="M 330 500 L 1050 500" stroke-dasharray="5,5"/>
+                    <text class="relationship-label" x="700" y="490">references</text>
+
+                    <!-- users -> reviews -->
+                    <path class="relationship-line" d="M 200 330 L 450 450" stroke-dasharray="5,5"/>
+                    <text class="relationship-label" x="250" y="390">writes</text>
+
+                    <!-- restaurants -> reviews -->
+                    <path class="relationship-line" d="M 1050 330 L 680 450" stroke-dasharray="5,5"/>
+                    <text class="relationship-label" x="900" y="390">receives</text>
+
+                    <!-- restaurants -> verifications -->
+                    <path class="relationship-line" d="M 1100 330 L 900 450" stroke-dasharray="5,5"/>
+                    <text class="relationship-label" x="1000" y="390">verified by</text>
+
+                    <!-- users -> user_preferences -->
+                    <path class="relationship-line" d="M 330 180 L 1050 550" stroke-dasharray="5,5"/>
+                    <text class="relationship-label" x="700" y="380">has</text>
+
+                    <!-- Legend -->
+                    <g>
+                        <rect fill="#f5f5f5" x="50" y="750" width="1280" height="120" rx="8"/>
+                        <text x="70" y="780" style="font-size: 14px; font-weight: bold; fill: #333;">Legende:</text>
+                        
+                        <rect fill="#ff9500" x="70" y="800" width="15" height="15" rx="2"/>
+                        <text x="95" y="812" style="font-size: 12px; fill: #333;">Collection (Tabelle)</text>
+                        
+                        <line x1="300" y1="808" x2="330" y2="808" stroke="#ff9500" stroke-width="2" stroke-dasharray="5,5"/>
+                        <text x="340" y="812" style="font-size: 12px; fill: #333;">1:N Relationship (Eins-zu-Viele)</text>
+                        
+                        <circle cx="600" cy="808" r="5" fill="#ff9500"/>
+                        <text x="615" y="812" style="font-size: 12px; fill: #333;">Primary Key (Primärschlüssel)</text>
+                        
+                        <text x="900" y="812" style="font-size: 12px; fill: #333;">🔗 Foreign Key (Fremdschlüssel)</text>
+                        
+                        <text x="70" y="840" style="font-size: 12px; fill: #666;">Jede Collection speichert Dokumente (ähnlich wie Datensätze). Beziehungen werden durch IDs referenziert.</text>
+                    </g>
+                </svg>
+            </div>
+        </div>
+
+        <!-- ===== 3. USER JOURNEY (GRAFISCH) ===== -->
+        <div class="diagram-section">
+            <h2>3️⃣ User Journey - Grafisch Visualisiert</h2>
+            
+            <div class="stats">
+                <div class="stat-card">
+                    <div class="stat-number">6</div>
+                    <div class="stat-label">Schritte</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">15+</div>
+                    <div class="stat-label">User Actions</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">10+</div>
+                    <div class="stat-label">Firebase Ops</div>
+                </div>
+            </div>
+
+            <div class="journey-container">
+                <!-- Step 1 -->
+                <div class="journey-step">
+                    <div class="journey-number">1️⃣</div>
+                    <div class="journey-content">
+                        <div class="journey-title">🔓 Authentifizierung & Login</div>
+                        <div class="journey-description">Der Benutzer öffnet die App und authentifiziert sich mit E-Mail oder Google-Konto.</div>
+                        <div class="journey-actions">
+                            <span class="action-tag">Email/Password Input</span>
+                            <span class="action-tag">Google OAuth</span>
+                            <span class="action-tag">Firebase Auth</span>
+                            <span class="action-tag">User Session</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="journey-connector"></div>
+
+                <!-- Step 2 -->
+                <div class="journey-step">
+                    <div class="journey-number">2️⃣</div>
+                    <div class="journey-content">
+                        <div class="journey-title">🔍 Allergie-Filter Setup</div>
+                        <div class="journey-description">Benutzer wählt seine Allergien und Präferenzen aus. Diese werden in Firestore gespeichert.</div>
+                        <div class="journey-actions">
+                            <span class="action-tag">Select Allergies</span>
+                            <span class="action-tag">Distance Slider</span>
+                            <span class="action-tag">Save Preferences</span>
+                            <span class="action-tag">Firestore Write</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="journey-connector"></div>
+
+                <!-- Step 3 -->
+                <div class="journey-step">
+                    <div class="journey-number">3️⃣</div>
+                    <div class="journey-content">
+                        <div class="journey-title">💬 Restaurant Swipe (Hauptfeature)</div>
+                        <div class="journey-description">Benutzer sieht Restaurant-Karten und kann diese liken (❤️) oder ablehnen (👎). Jede Aktion wird erfasst.</div>
+                        <div class="journey-actions">
+                            <span class="action-tag">Load Restaurants</span>
+                            <span class="action-tag">Filter anwenden</span>
+                            <span class="action-tag">Swipe Gesture</span>
+                            <span class="action-tag">Track Like/Dislike</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="journey-connector"></div>
+
+                <!-- Step 4 -->
+                <div class="journey-step">
+                    <div class="journey-number">4️⃣</div>
+                    <div class="journey-content">
+                        <div class="journey-title">❤️ Favoriten Management</div>
+                        <div class="journey-description">Gelikete Restaurants werden in der Favoritenliste gespeichert. Benutzer kann diese ansehen und verwalten.</div>
+                        <div class="journey-actions">
+                            <span class="action-tag">View Favorites</span>
+                            <span class="action-tag">Add to Favorites</span>
+                            <span class="action-tag">Remove from Favorites</span>
+                            <span class="action-tag">Firestore Sync</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="journey-connector"></div>
+
+                <!-- Step 5 -->
+                <div class="journey-step">
+                    <div class="journey-number">5️⃣</div>
+                    <div class="journey-content">
+                        <div class="journey-title">⭐ Review & Rating</div>
+                        <div class="journey-description">Benutzer kann das Restaurant bewerten, ein Review schreiben und Fotos hochladen. Allergie-Informationen sind wichtig!</div>
+                        <div class="journey-actions">
+                            <span class="action-tag">Select Rating</span>
+                            <span class="action-tag">Write Text</span>
+                            <span class="action-tag">Upload Photo</span>
+                            <span class="action-tag">Cloud Storage</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="journey-connector"></div>
+
+                <!-- Step 6 -->
+                <div class="journey-step">
+                    <div class="journey-number">6️⃣</div>
+                    <div class="journey-content">
+                        <div class="journey-title">✅ Review Submission & Analytics</div>
+                        <div class="journey-description">Review wird eingereicht, moderiert und gespeichert. User-Behavior wird für Analytics getrackt.</div>
+                        <div class="journey-actions">
+                            <span class="action-tag">Submit Review</span>
+                            <span class="action-tag">Cloud Function</span>
+                            <span class="action-tag">Moderation Check</span>
+                            <span class="action-tag">Analytics Track</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Data Flow Details -->
+            <div style="margin-top: 40px; background: #f5f5f5; padding: 20px; border-radius: 10px;">
+                <h3 style="color: #667eea; margin-bottom: 20px;">📊 Datenfluss für jeden Schritt:</h3>
+                
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;">
+                    <!-- Step 1 Dataflow -->
+                    <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #667eea;">
+                        <strong>Step 1 - Login:</strong><br/>
+                        User Input → Firebase Auth → Create Session → Store uid → Navigate to Discover
+                    </div>
+
+                    <!-- Step 2 Dataflow -->
+                    <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #667eea;">
+                        <strong>Step 2 - Filter:</strong><br/>
+                        Select Allergies → Save to users/{uid}/preferences → Trigger Query Builder
+                    </div>
+
+                    <!-- Step 3 Dataflow -->
+                    <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #667eea;">
+                        <strong>Step 3 - Swipe:</strong><br/>
+                        Query Firestore → Filter by Allergies → Load Restaurants → Track Swipe in State → Save to Analytics
+                    </div>
+
+                    <!-- Step 4 Dataflow -->
+                    <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #667eea;">
+                        <strong>Step 4 - Favorites:</strong><br/>
+                        Like Restaurant → Add to user_favorites/{uid}/favorites → Update UI → Real-time Sync
+                    </div>
+
+                    <!-- Step 5 Dataflow -->
+                    <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #667eea;">
+                        <strong>Step 5 - Review:</strong><br/>
+                        Input Form Data → Upload Photo to Cloud Storage → Create reviews Document → Store Reference
+                    </div>
+
+                    <!-- Step 6 Dataflow -->
+                    <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #667eea;">
+                        <strong>Step 6 - Submit:</strong><br/>
+                        Submit Review → Cloud Function Moderation → Update approved:true → Trigger Analytics → Send Notification
+                    </div>
+                </div>
+            </div>
+
+            <!-- System Interactions -->
+            <div style="margin-top: 40px; background: #f5f5f5; padding: 20px; border-radius: 10px;">
+                <h3 style="color: #667eea; margin-bottom: 20px;">🔧 System-Interaktionen pro Schritt:</h3>
+                
+                <svg viewBox="0 0 1200 400" style="max-width: 100%; height: auto;">
+                    <defs>
+                        <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+                            <polygon points="0 0, 10 3, 0 6" fill="#667eea"/>
+                        </marker>
+                    </defs>
+
+                    <!-- Step circles -->
+                    <circle cx="100" cy="50" r="35" fill="#667eea" opacity="0.2" stroke="#667eea" stroke-width="2"/>
+                    <text x="100" y="60" text-anchor="middle" fill="#667eea" font-weight="bold">Login</text>
+
+                    <circle cx="250" cy="50" r="35" fill="#667eea" opacity="0.2" stroke="#667eea" stroke-width="2"/>
+                    <text x="250" y="60" text-anchor="middle" fill="#667eea" font-weight="bold">Filter</text>
+
+                    <circle cx="400" cy="50" r="35" fill="#667eea" opacity="0.2" stroke="#667eea" stroke-width="2"/>
+                    <text x="400" y="60" text-anchor="middle" fill="#667eea" font-weight="bold">Swipe</text>
+
+                    <circle cx="550" cy="50" r="35" fill="#667eea" opacity="0.2" stroke="#667eea" stroke-width="2"/>
+                    <text x="550" y="60" text-anchor="middle" fill="#667eea" font-weight="bold">Favorites</text>
+
+                    <circle cx="700" cy="50" r="35" fill="#667eea" opacity="0.2" stroke="#667eea" stroke-width="2"/>
+                    <text x="700" y="60" text-anchor="middle" fill="#667eea" font-weight="bold">Review</text>
+
+                    <circle cx="850" cy="50" r="35" fill="#667eea" opacity="0.2" stroke="#667eea" stroke-width="2"/>
+                    <text x="850" y="60" text-anchor="middle" fill="#667eea" font-weight="bold">Submit</text>
+
+                    <!-- Arrows between steps -->
+                    <path d="M 135 50 L 215 50" stroke="#667eea" stroke-width="2" marker-end="url(#arrow)"/>
+                    <path d="M 285 50 L 365 50" stroke="#667eea" stroke-width="2" marker-end="url(#arrow)"/>
+                    <path d="M 435 50 L 515 50" stroke="#667eea" stroke-width="2" marker-end="url(#arrow)"/>
+                    <path d="M 585 50 L 665 50" stroke="#667eea" stroke-width="2" marker-end="url(#arrow)"/>
+                    <path d="M 735 50 L 815 50" stroke="#667eea" stroke-width="2" marker-end="url(#arrow)"/>
+
+                    <!-- Firebase Services for each step -->
+                    <g>
+                        <!-- Step 1 -->
+                        <rect x="50" y="120" width="100" height="60" fill="#ffe8cc" stroke="#ff9500" stroke-width="1" rx="4"/>
+                        <text x="100" y="140" text-anchor="middle" font-size="12" font-weight="bold">🔐 Auth</text>
+                        <text x="100" y="155" text-anchor="middle" font-size="10">Firebase Auth</text>
+                        <text x="100" y="168" text-anchor="middle" font-size="10">Session Mgmt</text>
+                    </g>
+
+                    <g>
+                        <!-- Step 2 -->
+                        <rect x="200" y="120" width="100" height="60" fill="#e8f0fe" stroke="#667eea" stroke-width="1" rx="4"/>
+                        <text x="250" y="140" text-anchor="middle" font-size="12" font-weight="bold">🗄️ Firestore</text>
+                        <text x="250" y="155" text-anchor="middle" font-size="10">Write Prefs</text>
+                        <text x="250" y="168" text-anchor="middle" font-size="10">Create Doc</text>
+                    </g>
+
+                    <g>
+                        <!-- Step 3 -->
+                        <rect x="350" y="120" width="100" height="60" fill="#e8f0fe" stroke="#667eea" stroke-width="1" rx="4"/>
+                        <text x="400" y="140" text-anchor="middle" font-size="12" font-weight="bold">📊 Query</text>
+                        <text x="400" y="155" text-anchor="middle" font-size="10">Read Restaurants</text>
+                        <text x="400" y="168" text-anchor="middle" font-size="10">Filter Query</text>
+                    </g>
+
+                    <g>
+                        <!-- Step 4 -->
+                        <rect x="500" y="120" width="100" height="60" fill="#e8f0fe" stroke="#667eea" stroke-width="1" rx="4"/>
+                        <text x="550" y="140" text-anchor="middle" font-size="12" font-weight="bold">💾 Update</text>
+                        <text x="550" y="155" text-anchor="middle" font-size="10">Add Favorite</text>
+                        <text x="550" y="168" text-anchor="middle" font-size="10">Array Union</text>
+                    </g>
+
+                    <g>
+                        <!-- Step 5 -->
+                        <rect x="650" y="120" width="100" height="60" fill="#fff0e8" stroke="#ff6b6b" stroke-width="1" rx="4"/>
+                        <text x="700" y="140" text-anchor="middle" font-size="12" font-weight="bold">📸 Storage</text>
+                        <text x="700" y="155" text-anchor="middle" font-size="10">Upload Photo</text>
+                        <text x="700" y="168" text-anchor="middle" font-size="10">Get URL</text>
+                    </g>
+
+                    <g>
+                        <!-- Step 6 -->
+                        <rect x="800" y="120" width="100" height="60" fill="#e8f0fe" stroke="#667eea" stroke-width="1" rx="4"/>
+                        <text x="850" y="140" text-anchor="middle" font-size="12" font-weight="bold">⚙️ Functions</text>
+                        <text x="850" y="155" text-anchor="middle" font-size="10">Moderation</text>
+                        <text x="850" y="168" text-anchor="middle" font-size="10">Analytics</text>
+                    </g>
+
+                    <!-- User actions below -->
+                    <g>
+                        <text x="100" y="230" text-anchor="middle" font-size="12" font-weight="bold">User Actions:</text>
+                        <text x="100" y="250" text-anchor="middle" font-size="11" fill="#666">Enter Email</text>
+                        <text x="100" y="265" text-anchor="middle" font-size="11" fill="#666">Click Login</text>
+                        <text x="100" y="280" text-anchor="middle" font-size="11" fill="#666">Confirm 2FA</text>
+
+                        <text x="250" y="250" text-anchor="middle" font-size="11" fill="#666">Select Items</text>
+                        <text x="250" y="265" text-anchor="middle" font-size="11" fill="#666">Drag Slider</text>
+                        <text x="250" y="280" text-anchor="middle" font-size="11" fill="#666">Save Prefs</text>
+
+                        <text x="400" y="250" text-anchor="middle" font-size="11" fill="#666">Swipe Left</text>
+                        <text x="400" y="265" text-anchor="middle" font-size="11" fill="#666">Swipe Right</text>
+                        <text x="400" y="280" text-anchor="middle" font-size="11" fill="#666">View Details</text>
+
+                        <text x="550" y="250" text-anchor="middle" font-size="11" fill="#666">Click ❤️</text>
+                        <text x="550" y="265" text-anchor="middle" font-size="11" fill="#666">Remove ✕</text>
+                        <text x="550" y="280" text-anchor="middle" font-size="11" fill="#666">View List</text>
+
+                        <text x="700" y="250" text-anchor="middle" font-size="11" fill="#666">Enter Text</text>
+                        <text x="700" y="265" text-anchor="middle" font-size="11" fill="#666">Pick Rating</text>
+                        <text x="700" y="280" text-anchor="middle" font-size="11" fill="#666">Select Photo</text>
+
+                        <text x="850" y="250" text-anchor="middle" font-size="11" fill="#666">Click Submit</text>
+                        <text x="850" y="265" text-anchor="middle" font-size="11" fill="#666">Wait 2-3s</text>
+                        <text x="850" y="280" text-anchor="middle" font-size="11" fill="#666">See Result</text>
+                    </g>
+
+                    <!-- Time indicators -->
+                    <g>
+                        <text x="100" y="330" text-anchor="middle" font-size="11" fill="#667eea" font-weight="bold">⏱️ 2-3 sec</text>
+                        <text x="250" y="330" text-anchor="middle" font-size="11" fill="#667eea" font-weight="bold">⏱️ 5-10 sec</text>
+                        <text x="400" y="330" text-anchor="middle" font-size="11" fill="#667eea" font-weight="bold">⏱️ 1-2 sec</text>
+                        <text x="550" y="330" text-anchor="middle" font-size="11" fill="#667eea" font-weight="bold">⏱️ <1 sec</text>
+                        <text x="700" y="330" text-anchor="middle" font-size="11" fill="#667eea" font-weight="bold">⏱️ 10-30 sec</text>
+                        <text x="850" y="330" text-anchor="middle" font-size="11" fill="#667eea" font-weight="bold">⏱️ 3-5 sec</text>
+                    </g>
+                </svg>
+            </div>
+        </div>
+
+        <!-- FOOTER -->
+        <div style="text-align: center; color: white; margin-top: 50px; padding: 20px;">
+            <p style="font-size: 14px; opacity: 0.8;">
+                🎨 Alle Diagramme erstellt am <strong>11. Januar 2026</strong>
+            </p>
+            <p style="font-size: 12px; opacity: 0.6;">
+                TasteMatch - Restaurant Discovery App mit Firebase Backend
+            </p>
+        </div>
+    </div>
+</body>
+</html>

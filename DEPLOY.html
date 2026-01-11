@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TasteMatch - Live Demo & Deployment</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            color: white;
+            margin-bottom: 40px;
+            animation: slideDown 0.6s ease-out;
+        }
+
+        header h1 {
+            font-size: 3em;
+            margin-bottom: 10px;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.3);
+        }
+
+        header p {
+            font-size: 1.2em;
+            opacity: 0.95;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            animation: fadeInUp 0.6s ease-out;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+        }
+
+        .card h2 {
+            color: #667eea;
+            margin-bottom: 15px;
+            font-size: 1.5em;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .card p {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 12px 25px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            border: none;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: 600;
+        }
+
+        .btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .btn-secondary {
+            background: #f0f0f0;
+            color: #667eea;
+            border: 2px solid #667eea;
+        }
+
+        .btn-secondary:hover {
+            background: #667eea;
+            color: white;
+        }
+
+        .features {
+            background: white;
+            border-radius: 15px;
+            padding: 40px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            animation: fadeInUp 0.8s ease-out;
+        }
+
+        .features h2 {
+            color: #667eea;
+            margin-bottom: 25px;
+            text-align: center;
+            font-size: 2em;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+
+        .feature-item {
+            padding: 20px;
+            background: #f9f9f9;
+            border-radius: 10px;
+            border-left: 4px solid #667eea;
+        }
+
+        .feature-item h3 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .feature-item p {
+            color: #666;
+            font-size: 0.95em;
+        }
+
+        .deployment-section {
+            background: white;
+            border-radius: 15px;
+            padding: 40px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            animation: fadeInUp 1s ease-out;
+        }
+
+        .deployment-section h2 {
+            color: #667eea;
+            margin-bottom: 25px;
+            font-size: 2em;
+        }
+
+        .deployment-steps {
+            counter-reset: step-counter;
+            display: grid;
+            gap: 20px;
+        }
+
+        .step {
+            counter-increment: step-counter;
+            display: flex;
+            gap: 20px;
+            padding: 20px;
+            background: #f9f9f9;
+            border-radius: 10px;
+            border-left: 4px solid #667eea;
+        }
+
+        .step-number {
+            flex-shrink: 0;
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1.2em;
+        }
+
+        .step-content h3 {
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .step-content p {
+            color: #666;
+            font-size: 0.95em;
+        }
+
+        .code-block {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 20px;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 15px 0;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+        }
+
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+
+        .table th,
+        .table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .table th {
+            background: #f0f0f0;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .table tr:hover {
+            background: #f9f9f9;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            font-weight: 600;
+        }
+
+        .status-live {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .status-ready {
+            background: #cfe2ff;
+            color: #084298;
+        }
+
+        footer {
+            text-align: center;
+            color: white;
+            padding: 30px;
+            opacity: 0.9;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .emoji {
+            font-size: 1.5em;
+        }
+
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 2em;
+            }
+
+            .grid {
+                grid-template-columns: 1fr;
+            }
+
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🍽️ TasteMatch</h1>
+            <p>Restaurant-Discovery App mit Tinder-Swipe & Allergie-Filtern</p>
+            <p style="font-size: 0.9em; margin-top: 10px;">
+                <span class="status-badge status-live">🟢 LIVE & FUNKTIONSFÄHIG</span>
+            </p>
+        </header>
+
+        <div class="grid">
+            <div class="card">
+                <h2><span class="emoji">🚀</span> Jetzt starten!</h2>
+                <p>Testen Sie TasteMatch sofort ohne Installation!</p>
+                <a href="./index.html" class="btn btn-primary">→ App öffnen</a>
+            </div>
+
+            <div class="card">
+                <h2><span class="emoji">👨‍💼</span> Admin-Panel</h2>
+                <p>Verwalten Sie Restaurants, Bewertungen und Verifizierungen!</p>
+                <a href="./admin.html" class="btn btn-primary">→ Admin-Panel</a>
+            </div>
+
+            <div class="card">
+                <h2><span class="emoji">📖</span> Dokumentation</h2>
+                <p>Komplette Guides und API-Dokumentation!</p>
+                <a href="./docs/SETUP.md" class="btn btn-secondary">→ Docs lesen</a>
+            </div>
+        </div>
+
+        <div class="features">
+            <h2>✨ Features</h2>
+            <div class="features-grid">
+                <div class="feature-item">
+                    <h3>🔍 Allergie-Filter</h3>
+                    <p>12 Allergen-Typen, Real-Time Filtering, Sicherheits-Badges</p>
+                </div>
+                <div class="feature-item">
+                    <h3>💬 Swipe-Funktion</h3>
+                    <p>Tinder-ähnliche Bedienung, Favoriten-Verwaltung</p>
+                </div>
+                <div class="feature-item">
+                    <h3>⭐ Bewertungen</h3>
+                    <p>5-Sterne Ratings, Foto-Uploads, Allergie-Kommentare</p>
+                </div>
+                <div class="feature-item">
+                    <h3>✅ Verifizierung</h3>
+                    <p>Restaurant-Registrierung, Email-Codes, Sicherheits-Badges</p>
+                </div>
+                <div class="feature-item">
+                    <h3>🗺️ Karte</h3>
+                    <p>Google Maps Integration, Entfernungsberechnung</p>
+                </div>
+                <div class="feature-item">
+                    <h3>💾 Persistenz</h3>
+                    <p>LocalStorage für Favoriten & Einstellungen</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="deployment-section">
+            <h2>🌐 Deployment-Optionen</h2>
+
+            <p style="color: #666; margin-bottom: 30px;">
+                TasteMatch ist vollständig bereit für verschiedene Deployment-Plattformen. Wählen Sie Ihre bevorzugte Option:
+            </p>
+
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Plattform</th>
+                        <th>Kosten</th>
+                        <th>Setup-Zeit</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Vercel</strong> ⭐</td>
+                        <td>Kostenlos</td>
+                        <td>5 Min</td>
+                        <td><span class="status-badge status-live">Empfohlen</span></td>
+                        <td><a href="https://vercel.com/new" class="btn btn-primary" style="padding: 8px 15px;">Deploy</a></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Netlify</strong></td>
+                        <td>Kostenlos</td>
+                        <td>5 Min</td>
+                        <td><span class="status-badge status-ready">Ready</span></td>
+                        <td><a href="https://app.netlify.com/start" class="btn btn-primary" style="padding: 8px 15px;">Deploy</a></td>
+                    </tr>
+                    <tr>
+                        <td><strong>GitHub Pages</strong></td>
+                        <td>Kostenlos</td>
+                        <td>10 Min</td>
+                        <td><span class="status-badge status-ready">Ready</span></td>
+                        <td><a href="https://pages.github.com/" class="btn btn-primary" style="padding: 8px 15px;">Deploy</a></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Docker</strong></td>
+                        <td>Variabel</td>
+                        <td>15 Min</td>
+                        <td><span class="status-badge status-ready">Ready</span></td>
+                        <td><a href="#docker-steps" class="btn btn-secondary" style="padding: 8px 15px;">Guide</a></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Railway</strong></td>
+                        <td>$5/Monat</td>
+                        <td>10 Min</td>
+                        <td><span class="status-badge status-ready">Ready</span></td>
+                        <td><a href="https://railway.app" class="btn btn-primary" style="padding: 8px 15px;">Deploy</a></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h2 style="color: #667eea; margin-top: 40px; margin-bottom: 20px;">🚀 Schnelle Deployment-Schritte</h2>
+
+            <div class="deployment-steps">
+                <div class="step">
+                    <div class="step-number">1</div>
+                    <div class="step-content">
+                        <h3>Repository vorbereiten</h3>
+                        <p>Pushen Sie den Code zu GitHub (oder Ihrem Git-Provider)</p>
+                        <div class="code-block">git init
+git add .
+git commit -m "Initial commit"
+git push origin main</div>
+                    </div>
+                </div>
+
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <div class="step-content">
+                        <h3>Vercel CLI installieren</h3>
+                        <p>Installieren Sie die Vercel Command-Line Tools (empfohlen)</p>
+                        <div class="code-block">npm install -g vercel
+vercel login</div>
+                    </div>
+                </div>
+
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <div class="step-content">
+                        <h3>Deploy ausführen</h3>
+                        <p>Starten Sie das Deployment mit einem Befehl</p>
+                        <div class="code-block">vercel --prod</div>
+                    </div>
+                </div>
+
+                <div class="step">
+                    <div class="step-number">4</div>
+                    <div class="step-content">
+                        <h3>Fertig! 🎉</h3>
+                        <p>Ihre App ist live und unter einer Vercel-URL erreichbar. Optional: Custom Domain hinzufügen</p>
+                    </div>
+                </div>
+            </div>
+
+            <h2 style="color: #667eea; margin-top: 40px; margin-bottom: 20px;" id="docker-steps">🐳 Docker Deployment</h2>
+
+            <div class="step">
+                <div class="step-number">D</div>
+                <div class="step-content">
+                    <h3>Docker Image bauen</h3>
+                    <p>Erstellen Sie ein Docker-Image aus dem mitgelieferten Dockerfile</p>
+                    <div class="code-block">docker build -t tastematch:latest .
+docker run -p 8000:8000 tastematch:latest</div>
+                    <p style="margin-top: 10px;"><strong>Dann:</strong> http://localhost:8000 öffnen</p>
+                </div>
+            </div>
+
+            <h2 style="color: #667eea; margin-top: 40px; margin-bottom: 20px;">📚 Dokumentation</h2>
+
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin-top: 20px;">
+                <a href="./docs/DEPLOYMENT.md" class="card" style="text-decoration: none; color: inherit;">
+                    <h3 style="color: #667eea;">📖 Deployment Guide</h3>
+                    <p>Detaillierte Anweisungen für alle Plattformen</p>
+                </a>
+                <a href="./docs/API.md" class="card" style="text-decoration: none; color: inherit;">
+                    <h3 style="color: #667eea;">🔌 API Dokumentation</h3>
+                    <p>REST API für Backend-Integration</p>
+                </a>
+                <a href="./docs/ARCHITECTURE.md" class="card" style="text-decoration: none; color: inherit;">
+                    <h3 style="color: #667eea;">🏗️ Architektur</h3>
+                    <p>Technische Übersicht & Design-Entscheidungen</p>
+                </a>
+                <a href="./QUICK_START.md" class="card" style="text-decoration: none; color: inherit;">
+                    <h3 style="color: #667eea;">⚡ Quick Start</h3>
+                    <p>Schneller Einstieg für Entwickler</p>
+                </a>
+            </div>
+        </div>
+
+        <footer>
+            <p><strong>TasteMatch</strong> © 2026 - Modern Restaurant Discovery with Allergy Safety</p>
+            <p style="font-size: 0.9em; margin-top: 10px;">🌍 Bereit für die ganze Welt! Deploy jetzt mit Vercel, Netlify oder Docker.</p>
+        </footer>
+    </div>
+</body>
+</html>
