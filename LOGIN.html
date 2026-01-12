@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TasteMatch - Willkommen</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .welcome-container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            max-width: 500px;
+            width: 100%;
+            padding: 40px;
+            text-align: center;
+        }
+
+        .logo {
+            font-size: 4em;
+            margin-bottom: 20px;
+        }
+
+        h1 {
+            font-size: 2.5em;
+            color: #333;
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        p {
+            color: #666;
+            font-size: 1.1em;
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
+
+        .feature-list {
+            text-align: left;
+            background: #f5f7fa;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+        }
+
+        .feature-list li {
+            list-style: none;
+            padding: 10px 0;
+            color: #333;
+            font-size: 0.95em;
+        }
+
+        .feature-list li:before {
+            content: "✓ ";
+            color: #667eea;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+
+        .button-group {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .btn {
+            padding: 14px 30px;
+            font-size: 1.05em;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.6);
+        }
+
+        .btn-secondary {
+            background: white;
+            color: #667eea;
+            border: 2px solid #667eea;
+            font-weight: 600;
+        }
+
+        .btn-secondary:hover {
+            background: #f5f7fa;
+            transform: translateY(-2px);
+        }
+
+        .divider {
+            display: flex;
+            align-items: center;
+            margin: 20px 0;
+            color: #999;
+        }
+
+        .divider::before,
+        .divider::after {
+            content: "";
+            flex: 1;
+            height: 1px;
+            background: #ddd;
+        }
+
+        .divider span {
+            padding: 0 10px;
+            font-size: 0.9em;
+        }
+
+        .social-buttons {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .social-btn {
+            flex: 1;
+            padding: 12px;
+            border: 2px solid #e5e7eb;
+            background: white;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 0.9em;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            color: #333;
+        }
+
+        .social-btn:hover {
+            border-color: #667eea;
+            background: #f5f7fa;
+        }
+
+        .social-btn.spotify {
+            border-color: #1DB954;
+            color: #1DB954;
+        }
+
+        .social-btn.spotify:hover {
+            background: #f0fff4;
+            transform: translateY(-2px);
+        }
+
+        .social-btn.google {
+            border-color: #ea4335;
+            color: #ea4335;
+        }
+
+        .social-btn.google:hover {
+            background: #fff5f5;
+            transform: translateY(-2px);
+        }
+
+        .badge {
+            display: inline-block;
+            background: #ecfdf5;
+            color: #067857;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            font-weight: 600;
+            margin-bottom: 20px;
+        }
+
+        .info-box {
+            background: #eff6ff;
+            border-left: 4px solid #667eea;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+            text-align: left;
+            font-size: 0.9em;
+            color: #333;
+        }
+
+        @media (max-width: 480px) {
+            .welcome-container {
+                padding: 30px 20px;
+            }
+
+            h1 {
+                font-size: 2em;
+            }
+
+            p {
+                font-size: 1em;
+            }
+
+            .button-group {
+                gap: 10px;
+            }
+
+            .btn {
+                padding: 12px 24px;
+                font-size: 1em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="welcome-container">
+        <div class="logo">❤️</div>
+        
+        <h1>TasteMatch</h1>
+        <p>Finde dein perfektes Restaurant mit Allergie-Filter & echten Bewertungen</p>
+
+        <div class="badge">✅ Keine Anmeldung erforderlich</div>
+
+        <div class="feature-list">
+            <ul>
+                <li>Restaurants nach Allergien filtern</li>
+                <li>Swipe-Funktion wie Tinder</li>
+                <li>Favoriten speichern</li>
+                <li>Echte Bewertungen sehen</li>
+                <li>Sofort starten - ohne Login!</li>
+            </ul>
+        </div>
+
+        <div class="button-group">
+            <a href="index.html" class="btn btn-primary">
+                🚀 Direkt starten - Keine Anmeldung nötig!
+            </a>
+
+            <div class="divider">
+                <span>oder optional</span>
+            </div>
+
+            <div class="social-buttons">
+                <button class="social-btn spotify" onclick="spotifyLogin()">
+                    🎵 Spotify
+                </button>
+                <button class="social-btn google" onclick="googleLogin()">
+                    🔐 Google
+                </button>
+            </div>
+
+            <a href="admin.html" class="btn btn-secondary">
+                👨‍💼 Admin Panel
+            </a>
+        </div>
+
+        <div class="info-box">
+            <strong>💡 Tipp:</strong> Du kannst alle Features ohne Anmeldung nutzen. Optional kannst du dich mit Spotify anmelden um deine Daten zu speichern.
+        </div>
+    </div>
+
+    <script>
+        function spotifyLogin() {
+            // TODO: Spotify OAuth Integration
+            alert('🎵 Spotify Login - Coming soon!\n\nFür jetzt: Klick auf "Direkt starten"');
+            window.location.href = 'index.html';
+        }
+
+        function googleLogin() {
+            // TODO: Google OAuth Integration
+            alert('🔐 Google Login - Coming soon!\n\nFür jetzt: Klick auf "Direkt starten"');
+            window.location.href = 'index.html';
+        }
+    </script>
+</body>
+</html>
